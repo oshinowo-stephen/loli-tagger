@@ -1,0 +1,51 @@
+{
+    "guild_settings": [{
+            "name": "id",
+            "type": "string",
+            "primary": true
+        },
+        {
+            "name": "vip",
+            "type": "string"
+        },
+        {
+            "name": "prefix",
+            "type": "string"
+        }
+    ],
+    "guild_toggles": [{
+        "name": "id",
+        "type": "string",
+        "primary": true
+    }],
+    "statuses": [{
+            "name": "name",
+            "type": "string",
+            "primary": true
+        },
+        {
+            "name": "type",
+            "type": "integer",
+            "default": 0
+        },
+        {
+            "name": "default",
+            "type": "boolean",
+            "default": false
+        }
+    ],
+    "tags": [{
+            "name": "id",
+            "type": "string",
+            "primary": true
+        },
+        {
+            "name": "key",
+            "type": "string"
+        },
+        {
+            "name": "value",
+            "type": "string"
+        }
+    ]
+}
