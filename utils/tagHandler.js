@@ -1,26 +1,30 @@
 const { DatabaseManager, Logger } = require('eris-boiler')
-const tables  = require('../config/database.json')
 const QueryBuilder = require('simple-knex')
 
 class TagHandler extends DatabaseManager {
     constructor() {
-        super(tables, Logger, QueryBuilder)
+        super({}, Logger, QueryBuilder)
     }
 
-    add(id, values) {
-        return this._qb.insert({ table: 'tags', data: { id, ...values } })
+    add(id, key, value) {
+        return this._qb.insert({ table: 'tags', data: { id, key, value } })
+            .catch(() => this._qb.update({ table: 'tags', data: { key, value }, where: { id } }))
     }
 
-    get(id, key) {
-        return this._qb.get({ table: 'tags', where: { id, key } })
+    get(key) {
+        return this._qb.get({ table: 'tags', where: { key } })
     }
 
-    edit(id, key, newValue) {
-        return this._qb.update({ table: 'tags', data: { key, newValue }, where: { id } })
+    edit(key, newValue) {
+        return this._qb.update({ table: 'tags', data: { value: newValue }, where: { key } })
     }
 
-    remove(id, key) {
-        return this._qb.delete({ table: 'tags', where: { id, key } })
+    remove(key) {
+        return this._qb.delete({ table: 'tags', where: { key } })
+    }
+
+    grabUserTags(id) {
+        return this._qb.select({ table: 'tags', where: { id } })
     }
 }
 

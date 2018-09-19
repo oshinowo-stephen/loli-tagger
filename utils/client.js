@@ -6,10 +6,6 @@ class LoliTagger extends DataClient {
         super(opt)
 
         this._tagger = new TagHandler()
-
-        this._tagger.initialize(this.guilds)
-            .then(() => console.log('Init tables'))
-            .catch(err => console.log(err))
     }
 }
 
