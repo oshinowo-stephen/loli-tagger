@@ -26,6 +26,10 @@ class TagHandler extends DatabaseManager {
     grabUserTags(id) {
         return this._qb.select({ table: 'tags', where: { id } })
     }
+
+    grabTags() {
+        return this._qb.select({ table: 'tags' })
+    }
 }
 
 module.exports = TagHandler

@@ -3,14 +3,14 @@ const { get } = require('superagent')
 
 module.exports = (bot) => new Command(bot, {
     name: 'tag',
-    description: 'Finds, Adds, Remove, or Edit tags',
+    description: 'Finds, Adds, Remove, or Edit tags\n',
     options: {
-        deleteInvoking: false,
         deleteResponse: false
     },
     run: async ({ msg, params }) => {
+        let { prefix } = await bot.dbm.getSettings(msg.channel.guild.id)
         if (params.length !== 0) return await doAction(params, msg, bot)
-        else return 'I\'m not sure if you\'re doing this correctly. Try doing `!help tag`'
+        else return `I\'m not sure if you\'re doing this correctly. Try doing '${prefix}help tag'`
     }
 })
 
@@ -47,9 +47,26 @@ async function doAction([cmd, ...values], msg, client) {
             await client._tagger.edit(key, (Array.isArray(value) ? value.join(' ') : value))
             return `Updated tag \`${key}\` to ${Array.isArray(value) ? value.join(' ') : value}`
         case 'list':
+        case 'tags':
             const values = await client._tagger.grabUserTags(msg.author.id)
-            console.log(values)
-            return ``
+            if (values.length === 0) return 'No tags found for you.'
+
+            return { 
+                embed: {
+                    description: values.map(({ key }) => key).join('\n')
+                } 
+            }
+        case 'search':
+        case 'find':
+            let tags = await client._tagger.grabTags()
+            if (tags.length === 0) return 'No tags found.'
+            tags = tags.filter(t => t.key.includes(key))
+
+            return { 
+                embed: {
+                    description: tags.map(({ key }) => key).join('\n')
+                } 
+            }
         default:
             const tag = await client._tagger.get(cmd)
             const isImagRegex = new RegExp(/^https:?\/(.*).(png|jpeg|jpg|gif)/)
