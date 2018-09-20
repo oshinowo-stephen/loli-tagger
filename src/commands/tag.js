@@ -74,12 +74,13 @@ async function doAction([cmd, ...values], msg, client) {
             if (!key) return `Missing tag key!`
             const tagInfo = await client._tagger.get(key)
             if (!tagInfo) return `Tag \`${key}\` doesn't exists`
+            const user = client.users.get(tagInfo.id)
 
             return {
                 embed: {
                     author: {
-                        name: client.users.get(tagInfo.id).username,
-                        icon_url: client.users.get(tagInfo.id).avatarURL
+                        name: `${user.username}#${user.discriminator}`,
+                        icon_url: user.avatarURL
                     },
                     fields: [
                         {
@@ -102,14 +103,14 @@ async function doAction([cmd, ...values], msg, client) {
             const isImagRegex = new RegExp(/^(https|http):?\/(.*).(png|jpeg|jpg|gif)/)
 
             if (!tag) return `Tag \`${cmd}\` doesn't exists`
-            if (isImagRegex.test(tag.value)) return await grabImage(tag)
+            if (isImagRegex.test(tag.value)) return await grabImage(client, tag)
             await client._tagger.count(tag.key)
 
             return { content: `Tag \`${tag.key}\` found.\n${tag.value}` }
     }
 }
 
-async function grabImage(tag) {
+async function grabImage(client, tag) {
     const { body } = await get(tag.value)
     const ext = tag.value.match(/^https:?\/(.*).(png|jpeg|jpg|gif)/)[2]
     await client._tagger.count(tag.key)
