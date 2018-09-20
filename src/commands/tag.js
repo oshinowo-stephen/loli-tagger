@@ -3,10 +3,10 @@ const { get } = require('superagent')
 
 module.exports = (bot) => new Command(bot, {
     name: 'tag',
-    description: 'Finds, Adds, Remove, or Edit tags\n',
     options: {
         deleteResponse: false
     },
+    description: 'Finds, Adds, Remove, or Edit tags\n',
     run: async ({ msg, params }) => {
         let { prefix } = await bot.dbm.getSettings(msg.channel.guild.id)
         if (params.length !== 0) return await doAction(params, msg, bot)
@@ -27,7 +27,8 @@ async function doAction([cmd, ...values], msg, client) {
         case 'create':
             if (!key) return 'Missing key!'
             if (!value) return 'Missing value!'
-            await client._tagger.add(msg.author.id, key, (Array.isArray(value) ? value.join(' ') : value))
+            const result = await client._tagger.add(msg.author.id, key, (Array.isArray(value) ? value.join(' ') : value))
+            if (result === false) return 'Current link doesn\'t exists... please try another.'
             return `Added tag \`${key}\` with value of ${Array.isArray(value) ? value.join(' ') : value}`
         case 'delete':
         case 'remove':
@@ -53,26 +54,56 @@ async function doAction([cmd, ...values], msg, client) {
 
             return { 
                 embed: {
+                    title: `${msg.author.username} Tags.`,
                     description: values.map(({ key }) => key).join('\n')
                 } 
             }
         case 'search':
         case 'find':
-            let tags = await client._tagger.grabTags()
+            let tags = await client._tagger.grabTags(key)
             if (tags.length === 0) return 'No tags found.'
-            tags = tags.filter(t => t.key.includes(key))
 
             return { 
                 embed: {
+                    title: `Found tags with relation of ${key}`,
                     description: tags.map(({ key }) => key).join('\n')
                 } 
             }
+        case 'info':
+        case 'about':
+            if (!key) return `Missing tag key!`
+            const tagInfo = await client._tagger.get(key)
+            if (!tagInfo) return `Tag \`${key}\` doesn't exists`
+
+            return {
+                embed: {
+                    author: {
+                        name: client.users.get(tagInfo.id).username,
+                        icon_url: client.users.get(tagInfo.id).avatarURL
+                    },
+                    fields: [
+                        {
+                            name: 'Tag Name',
+                            value: tagInfo.key
+                        },
+                        {
+                            name: 'Tag Value',
+                            value: tagInfo.value
+                        },
+                        {
+                            name: 'Use Count',
+                            value: tagInfo.count
+                        }
+                    ]
+                }
+            }
         default:
             const tag = await client._tagger.get(cmd)
-            const isImagRegex = new RegExp(/^https:?\/(.*).(png|jpeg|jpg|gif)/)
+            const isImagRegex = new RegExp(/^(https|http):?\/(.*).(png|jpeg|jpg|gif)/)
 
             if (!tag) return `Tag \`${cmd}\` doesn't exists`
             if (isImagRegex.test(tag.value)) return await grabImage(tag)
+            await client._tagger.count(tag.key)
 
             return { content: `Tag \`${tag.key}\` found.\n${tag.value}` }
     }
@@ -81,6 +112,7 @@ async function doAction([cmd, ...values], msg, client) {
 async function grabImage(tag) {
     const { body } = await get(tag.value)
     const ext = tag.value.match(/^https:?\/(.*).(png|jpeg|jpg|gif)/)[2]
+    await client._tagger.count(tag.key)
 
     return { content: `Tag \'${tag.key}\' found.`, file: { file: body, name: `loli_tagger.image.${ext}` } }
 }

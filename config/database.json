@@ -11,6 +11,11 @@
         {
             "name": "value",
             "type": "string"
+        },
+        {
+            "name": "count",
+            "type": "integer",
+            "default": 0
         }
     ]
 }
