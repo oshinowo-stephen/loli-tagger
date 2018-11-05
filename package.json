@@ -7,7 +7,8 @@
   "author": "GitStonic <kingstonicthe1@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon index"
+    "dev": "nodemon index",
+    "start": "yarn add superagent && node index.js"
   },
   "devDependencies": {
     "dotenv": "^6.0.0",
