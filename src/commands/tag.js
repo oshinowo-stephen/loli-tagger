@@ -50,7 +50,7 @@ async function doAction([cmd, ...values], msg, client) {
         case 'list':
         case 'tags':
             const values = await client._tagger.grabUserTags(msg.author.id)
-            if (values.length === 0) return 'No tags found for you.'
+            if (values === undefined) return 'No tags found for you.'
 
             return { 
                 embed: {
@@ -112,7 +112,7 @@ async function doAction([cmd, ...values], msg, client) {
 
 async function grabImage(client, tag) {
     const { body } = await get(tag.value)
-    const ext = tag.value.match(/^https:?\/(.*).(png|jpeg|jpg|gif)/)[2]
+    const ext = tag.value.toLowerCase().match(/^https:?\/(.*).(png|jpeg|jpg|gif)/)[2]
     await client._tagger.count(tag.key)
 
     return { content: `Tag \'${tag.key}\' found.`, file: { file: body, name: `loli_tagger.image.${ext}` } }
