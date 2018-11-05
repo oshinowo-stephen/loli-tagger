@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon index",
-    "start": "yarn add superagent && node index.js"
+    "start": "yarn && node index.js"
   },
   "devDependencies": {
     "dotenv": "^6.0.0",
