@@ -8,12 +8,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon index",
-    "start": "yarn add pg superagent alex-taxiera/eris-boiler#master dotenv && node index.js"
+    "start": "yarn add pg superagent eris-boiler@^3.0.0-beta.3 dotenv && node index.js"
   },
   "dependencies": {
-    "eris-boiler": "alex-taxiera/eris-boiler#master",
-    "dotenv": "^6.0.0",
-    "pg": "^7.4.3",
+    "dotenv": "^6.1.0",
+    "eris-boiler": "3.0.0-beta.3",
+    "pg": "^7.6.0",
     "superagent": "^4.0.0-beta.5"
   }
 }
