@@ -10,12 +10,10 @@
     "dev": "nodemon index",
     "start": "yarn && node index.js"
   },
-  "devDependencies": {
+  "dependencies": {
+    "eris-boiler": "^3.0.0-beta.3",
     "dotenv": "^6.0.0",
     "pg": "^7.4.3",
     "superagent": "^4.0.0-beta.5"
-  },
-  "dependencies": {
-    "eris-boiler": "^3.0.0-beta.3"
   }
 }
