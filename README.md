@@ -1,2 +1,2 @@
-# loli-tagger
-A Discord bot that i'm "making"
+# ImageTagBot
+An image-saving bot made for Discord.

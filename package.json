@@ -1,19 +1,26 @@
 {
-  "name": "loli-tagger",
-  "version": "0.0.1",
-  "description": "Nope",
-  "main": "index.js",
-  "repository": "https://github.com/GitStonic/loli-tagger.git",
-  "author": "GitStonic <kingstonicthe1@gmail.com>",
+  "name": "image-tag-bot",
+  "version": "0.0.0",
+  "description": "An image saving bot built for Discord.",
+  "repository": "https://github.com/alex-taxiera/image-tag-bot.git",
+  "author": "Alex Taxiera",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon index",
-    "start": "yarn add pg superagent eris-boiler@^3.0.0-beta.3 dotenv && node index.js"
+    "dev": "nodemon index.js",
+    "start": "node index.js"
   },
   "dependencies": {
-    "dotenv": "^6.1.0",
-    "eris-boiler": "3.0.0-beta.3",
-    "pg": "^7.6.0",
+    "dotenv": "^6.2.0",
+    "eris-boiler": "github:alex-taxiera/eris-boiler#master",
+    "pg": "^7.7.1",
     "superagent": "^4.0.0-beta.5"
+  },
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
   }
 }
