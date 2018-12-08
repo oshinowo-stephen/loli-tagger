@@ -21,7 +21,7 @@ module.exports = (bot) => new Command(
 
       const { body } = await get(tag.src)
       const ext = tag.src.toLowerCase().match(IMAGE_REGEXP).pop()
-      bot.tag.incrementTagCount(tag.key).catch((error) => console.error('failed to count', error))
+      bot.tag.incrementTagCount(tag.key).catch((error) => bot.logger.error('failed to count', error))
 
       return { file: { file: body, name: `${tag.key}.${ext}` } }
     }
@@ -51,8 +51,17 @@ const add = (bot) => new Command(
         return 'Bad link!'
       }
 
-      await bot.tag.addTag(msg.author.id, key, src)
-      return `Added tag \`${key}\``
+      return bot.tag.addTag(msg.author.id, key, src)
+        .then(() => `Added tag \`${key}\``)
+        .catch((error) => {
+          switch (error.code) {
+            case 'ER_DUP_ENTRY':
+              return `Tag \`${key}\` already exists!`
+            default:
+              console.error(error)
+              return 'Something went wrong adding this tag, sorry!'
+          }
+        })
     }
   }
 )
