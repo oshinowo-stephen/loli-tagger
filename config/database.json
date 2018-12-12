@@ -1,21 +1,25 @@
-{
-    "tags": [{
-            "name": "id",
-            "type": "string"
-        },
-        {
-            "name": "key",
-            "type": "string",
-            "primary": true
-        },
-        {
-            "name": "value",
-            "type": "string"
-        },
-        {
-            "name": "count",
-            "type": "integer",
-            "default": 0
-        }
+[
+  {
+    "name": "tags",
+    "columns": [
+      {
+        "name": "key",
+        "type": "string",
+        "primary": true
+      },
+      {
+        "name": "userId",
+        "type": "string"
+      },
+      {
+        "name": "src",
+        "type": "string"
+      },
+      {
+        "name": "count",
+        "type": "integer",
+        "default": 0
+      }
     ]
-}
+  }
+]

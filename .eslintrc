@@ -1,0 +1,12 @@
+{
+  "extends": "standard",
+  "rules": {
+    "arrow-parens": "error",
+    "no-lonely-if": "error",
+    "max-len": ["warn", {
+      "ignoreComments": true,
+      "ignoreRegExpLiterals": true,
+      "ignoreUrls": true
+      }]
+  }
+}
