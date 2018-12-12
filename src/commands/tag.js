@@ -1,7 +1,7 @@
 const { Command } = require('eris-boiler')
 const { get } = require('superagent')
 
-const IMAGE_REGEXP = new RegExp(/^(https|http):?\/(.*).(png|jpeg|jpg|gif)/)
+const IMAGE_REGEXP = new RegExp(/^(https|http):?\/(.*).(png|jpeg|jpg|gif|PNG|JPEG|JPG|GIF)/)
 
 module.exports = (bot) => new Command(
   bot,
@@ -19,6 +19,7 @@ module.exports = (bot) => new Command(
       const tag = await bot.tag.getTag(key)
       if (!tag) return `Tag \`${key}\` doesn't exists`
 
+      console.log(tag)
       const { body } = await get(tag.src)
       const ext = tag.src.toLowerCase().match(IMAGE_REGEXP).pop()
       bot.tag.incrementTagCount(tag.key).catch((error) => bot.logger.error('failed to count', error))
@@ -39,27 +40,18 @@ const add = (bot) => new Command(
     },
     run: async function ({ bot, msg, params }) {
       const [key, url] = params
-      const src = msg.attachments.length > 0 ? msg.attachments[0].url : url
+      const image = msg.attachments.length > 0 ? msg.attachments[0].url : url
 
       if (!key) return 'Missing key!'
-      if (!src) return 'Please attach an image or specify a url!'
-      if (!IMAGE_REGEXP.test(src)) return 'Not an image!'
+      if (!image) return 'Please attach an image or specify a url!'
+      if (!IMAGE_REGEXP.test(image)) return 'Not an image!'
 
-      try {
-        await get(src)
-      } catch (err) {
-        return 'Bad link!'
-      }
-
-      return bot.tag.addTag(msg.author.id, key, src)
+      return bot.imgur.upload(msg.author.id, { key, image })
         .then(() => `Added tag \`${key}\``)
-        .catch((error) => {
-          switch (error.code) {
+        .catch((err) => {
+          switch (err.code) {
             case 'ER_DUP_ENTRY':
               return `Tag \`${key}\` already exists!`
-            default:
-              console.error(error)
-              return 'Something went wrong adding this tag, sorry!'
           }
         })
     }
@@ -98,7 +90,7 @@ const update = (bot) => new Command(
     },
     run: async function ({ bot, msg, params }) {
       const [key, url] = params
-      const src = msg.attachments.length > 0 ? msg.attachments[0].url : url
+      let src = msg.attachments.length > 0 ? msg.attachments[0].url : url
 
       if (!key) return 'Missing key!'
       const tag = await bot.tag.getTag(key)
@@ -113,7 +105,7 @@ const update = (bot) => new Command(
         return 'Bad link!'
       }
 
-      await bot.tag.updateTag(key, src)
+      await bot.imgur.update(key, src)
       return `Updated tag \`${key}\``
     }
   }
